@@ -65,4 +65,31 @@ export const PatternWebToggle: Story = {
       },
     },
   },
+};
+
+export const SnippetLibrary: Story = {
+  args: {
+    workspaces: ['Project A', 'Project B', 'Project C'],
+    currentWorkspace: 'Project A',
+    documents: [
+      { id: 1, title: 'Doc 1', folder: 'Main' },
+      { id: 2, title: 'Doc 2', folder: 'Main' },
+    ],
+    viewMode: 'docs',
+    snippets: [
+      { id: '1', title: 'Sample Intro Text', content: 'Hello, world!' },
+      { id: '2', title: 'Brand Guidelines Snippet', content: 'Use color #003366...' },
+    ],
+    onSelectWorkspace: action('workspaceSwitched'),
+    onSelectDoc: action('docSelected'),
+    onToggleViewMode: action('viewModeToggled'),
+    onSnippetSelect: action('snippetSelected'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Left panel with a collapsible snippets library at the bottom',
+      },
+    },
+  },
 }; 
