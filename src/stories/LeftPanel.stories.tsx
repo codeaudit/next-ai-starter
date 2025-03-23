@@ -30,13 +30,38 @@ export const WorkspaceAndDocs: Story = {
       { id: 2, title: 'Doc 2', folder: 'Main' },
       { id: 3, title: 'Archived Doc', folder: 'Archive' },
     ],
+    viewMode: 'docs',
     onSelectWorkspace: action('workspaceSwitched'),
     onSelectDoc: action('docSelected'),
+    onToggleViewMode: action('viewModeToggled'),
   },
   parameters: {
     docs: {
       description: {
         story: 'Left panel with workspace dropdown and document hierarchy',
+      },
+    },
+  },
+};
+
+export const PatternWebToggle: Story = {
+  args: {
+    workspaces: ['Project A', 'Project B', 'Project C'],
+    currentWorkspace: 'Project A',
+    documents: [
+      { id: 1, title: 'Doc 1', folder: 'Main' },
+      { id: 2, title: 'Doc 2', folder: 'Main' },
+      { id: 3, title: 'Archived Doc', folder: 'Archive' },
+    ],
+    viewMode: 'patternWeb',
+    onSelectWorkspace: action('workspaceSwitched'),
+    onSelectDoc: action('docSelected'),
+    onToggleViewMode: action('viewModeToggled'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Left panel with pattern web toggle enabled, showing the pattern web view',
       },
     },
   },

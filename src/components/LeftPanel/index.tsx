@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
+import { ChevronDown, ChevronRight, File, Folder, LayoutGrid, FileText } from "lucide-react";
 
 export interface Document {
   id: number | string;
@@ -9,20 +9,26 @@ export interface Document {
   folder: string;
 }
 
+export type ViewMode = "docs" | "patternWeb";
+
 export interface LeftPanelProps {
   workspaces: string[];
   currentWorkspace: string;
   documents: Document[];
+  viewMode?: ViewMode;
   onSelectWorkspace?: (workspace: string) => void;
   onSelectDoc?: (docId: number | string) => void;
+  onToggleViewMode?: (mode: ViewMode) => void;
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
   workspaces,
   currentWorkspace,
   documents,
+  viewMode = "docs",
   onSelectWorkspace,
   onSelectDoc,
+  onToggleViewMode,
 }) => {
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({
@@ -48,6 +54,10 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   const handleWorkspaceChange = (workspace: string) => {
     onSelectWorkspace?.(workspace);
     setIsWorkspaceOpen(false);
+  };
+
+  const handleViewModeToggle = (mode: ViewMode) => {
+    onToggleViewMode?.(mode);
   };
 
   return (
@@ -86,45 +96,83 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
         </div>
       </div>
 
-      {/* Document List */}
-      <div className="flex-1 overflow-y-auto p-2">
-        <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider px-2 mb-2">
-          Documents
-        </div>
-        
-        {Object.entries(documentsByFolder).map(([folderName, docs]) => (
-          <div key={folderName} className="mb-1">
-            <button 
-              className="flex items-center w-full px-2 py-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm text-neutral-700 dark:text-neutral-300"
-              onClick={() => toggleFolder(folderName)}
-            >
-              {expandedFolders[folderName] ? (
-                <ChevronDown className="h-4 w-4 mr-1" />
-              ) : (
-                <ChevronRight className="h-4 w-4 mr-1" />
-              )}
-              <Folder className="h-4 w-4 mr-2 text-neutral-500 dark:text-neutral-400" />
-              <span>{folderName}</span>
-            </button>
-            
-            {expandedFolders[folderName] && (
-              <ul className="pl-9 mt-1">
-                {docs.map((doc) => (
-                  <li key={doc.id}>
-                    <button
-                      className="flex items-center w-full px-2 py-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm text-neutral-600 dark:text-neutral-400"
-                      onClick={() => onSelectDoc?.(doc.id)}
-                    >
-                      <File className="h-4 w-4 mr-2 text-neutral-500 dark:text-neutral-400" />
-                      <span>{doc.title}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+      {/* View Mode Toggle */}
+      <div className="flex border-b border-neutral-200 dark:border-neutral-800">
+        <button
+          className={`flex-1 flex justify-center items-center py-2 text-sm ${
+            viewMode === "docs"
+              ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 dark:border-blue-400"
+              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          }`}
+          onClick={() => handleViewModeToggle("docs")}
+        >
+          <FileText className="h-4 w-4 mr-1" />
+          <span>Documents</span>
+        </button>
+        <button
+          className={`flex-1 flex justify-center items-center py-2 text-sm ${
+            viewMode === "patternWeb"
+              ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 dark:border-blue-400"
+              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          }`}
+          onClick={() => handleViewModeToggle("patternWeb")}
+        >
+          <LayoutGrid className="h-4 w-4 mr-1" />
+          <span>Pattern Web</span>
+        </button>
       </div>
+
+      {/* Content based on viewMode */}
+      {viewMode === "docs" ? (
+        // Document List
+        <div className="flex-1 overflow-y-auto p-2">
+          <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider px-2 mb-2">
+            Documents
+          </div>
+          
+          {Object.entries(documentsByFolder).map(([folderName, docs]) => (
+            <div key={folderName} className="mb-1">
+              <button 
+                className="flex items-center w-full px-2 py-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm text-neutral-700 dark:text-neutral-300"
+                onClick={() => toggleFolder(folderName)}
+              >
+                {expandedFolders[folderName] ? (
+                  <ChevronDown className="h-4 w-4 mr-1" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 mr-1" />
+                )}
+                <Folder className="h-4 w-4 mr-2 text-neutral-500 dark:text-neutral-400" />
+                <span>{folderName}</span>
+              </button>
+              
+              {expandedFolders[folderName] && (
+                <ul className="pl-9 mt-1">
+                  {docs.map((doc) => (
+                    <li key={doc.id}>
+                      <button
+                        className="flex items-center w-full px-2 py-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm text-neutral-600 dark:text-neutral-400"
+                        onClick={() => onSelectDoc?.(doc.id)}
+                      >
+                        <File className="h-4 w-4 mr-2 text-neutral-500 dark:text-neutral-400" />
+                        <span>{doc.title}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        // Pattern Web Placeholder
+        <div className="flex-1 flex items-center justify-center p-6 text-center">
+          <div className="text-neutral-500 dark:text-neutral-400">
+            <LayoutGrid className="h-16 w-16 mx-auto mb-4 opacity-20" />
+            <p className="text-sm">Pattern Web View</p>
+            <p className="text-xs mt-2">Select this mode to visualize connections between patterns</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
