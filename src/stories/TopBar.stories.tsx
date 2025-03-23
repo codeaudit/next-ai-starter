@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { TopBar } from '../components/TopBar';
 
 const meta: Meta<typeof TopBar> = {
@@ -25,6 +26,8 @@ export const WithVibeControl: Story = {
   args: {
     title: 'PatternLanguageO1 Toolbox',
     showVibeControl: true,
+    vibeLevel: 50,
+    onVibeChange: action('vibeChanged'),
     user: { name: 'Test User', avatarUrl: '' },
   },
 }; 
