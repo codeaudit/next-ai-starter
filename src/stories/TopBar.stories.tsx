@@ -30,4 +30,22 @@ export const WithVibeControl: Story = {
     onVibeChange: action('vibeChanged'),
     user: { name: 'Test User', avatarUrl: '' },
   },
+};
+
+export const AdvancedMenu: Story = {
+  args: {
+    title: 'PatternLanguageO1 Toolbox',
+    showVibeControl: false,
+    user: { name: 'Test User', avatarUrl: 'https://example.com/avatar.png' },
+    onSettingsClick: action('settingsClicked'),
+    onHelpClick: action('helpClicked'),
+    onLogoutClick: action('logoutClicked'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'TopBar with an expanded user menu that includes settings, help, and logout options.',
+      },
+    },
+  },
 }; 

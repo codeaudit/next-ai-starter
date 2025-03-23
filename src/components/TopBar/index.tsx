@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { User } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { User, Settings, HelpCircle, LogOut } from "lucide-react";
 
 export interface TopBarProps {
   title: string;
@@ -12,6 +12,9 @@ export interface TopBarProps {
     name: string;
     avatarUrl?: string;
   };
+  onSettingsClick?: () => void;
+  onLogoutClick?: () => void;
+  onHelpClick?: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -20,14 +23,35 @@ export const TopBar: React.FC<TopBarProps> = ({
   vibeLevel = 50,
   onVibeChange,
   user = { name: "User", avatarUrl: "" },
+  onSettingsClick,
+  onLogoutClick,
+  onHelpClick,
 }) => {
   const [sliderValue, setSliderValue] = useState(vibeLevel);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value, 10);
     setSliderValue(newValue);
     onVibeChange?.(newValue);
   };
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
@@ -63,8 +87,11 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       {/* Right section - User Menu */}
-      <div className="flex items-center">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer">
+      <div className="flex items-center relative" ref={menuRef}>
+        <div 
+          className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+          onClick={toggleMenu}
+        >
           {user.avatarUrl ? (
             <img 
               src={user.avatarUrl} 
@@ -78,6 +105,48 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
           <span className="text-sm text-neutral-700 dark:text-neutral-300">{user.name}</span>
         </div>
+
+        {/* Dropdown Menu */}
+        {menuOpen && (
+          <div className="absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-neutral-800 ring-1 ring-black ring-opacity-5 z-10">
+            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+              <button
+                className="flex items-center w-full px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                role="menuitem"
+                onClick={() => {
+                  onSettingsClick?.();
+                  setMenuOpen(false);
+                }}
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Preferences
+              </button>
+              <button
+                className="flex items-center w-full px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                role="menuitem"
+                onClick={() => {
+                  onHelpClick?.();
+                  setMenuOpen(false);
+                }}
+              >
+                <HelpCircle className="mr-2 h-4 w-4" />
+                Help
+              </button>
+              <div className="border-t border-neutral-200 dark:border-neutral-700 my-1"></div>
+              <button
+                className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                role="menuitem"
+                onClick={() => {
+                  onLogoutClick?.();
+                  setMenuOpen(false);
+                }}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
