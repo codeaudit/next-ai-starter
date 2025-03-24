@@ -159,14 +159,14 @@ Below is a **long, detailed markdown list** of **1 story-point tasks** for an AI
 
 ### 5.1. **AIComposer/ChatInterface**
 
-- [ ] **Task**: Build a basic **chat log** with user messages and AI responses.  
-- [ ] **Props/Data**:
+- [x] **Task**: Build a basic **chat log** with user messages and AI responses.  
+- [x] **Props/Data**:
   - `messages: [
       { role: "user", text: "Hello" },
       { role: "ai", text: "Hi! How can I help?" }
     ]`
   - `onSendMessage: (text) => console.log("Message sent:", text)`
-- [ ] **Story States**:
+- [x] **Story States**:
   - **Default**: Minimal conversation.  
   - **MultipleMessages**: More extensive backlog to test scrolling.
 

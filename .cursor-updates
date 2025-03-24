@@ -14,3 +14,4 @@
 - Implemented CenterPanel with DocumentEditor component supporting markdown editing with real-time preview toggle and content saving functionality.
 - Added VersionTimeline component to CenterPanel that visualizes document history with support for branching versions, tooltips showing dates, and interactive selection.
 - Created ConflictView component for CenterPanel showing a 2-column layout for conflicting approaches with a resolution area and responsive design.
+- Implemented ChatInterface component in RightPanel with message history, user/AI differentiation, auto-scrolling to latest messages, and intuitive text input.
