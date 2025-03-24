@@ -131,14 +131,14 @@ Below is a **long, detailed markdown list** of **1 story-point tasks** for an AI
 
 ### 4.2. **CenterPanel/VersionTimeline**
 
-- [ ] **Task**: Display a **horizontal timeline** (or minimal placeholder) for document versions.  
-- [ ] **Props/Data**:
+- [x] **Task**: Display a **horizontal timeline** (or minimal placeholder) for document versions.  
+- [x] **Props/Data**:
   - `versions: [
       { id: "v1", label: "Draft 1", date: "2025-01-01" },
       { id: "v2", label: "Draft 2", date: "2025-02-10" }
     ]`
   - `onSelectVersion: (versionId) => console.log("Version selected:", versionId)`
-- [ ] **Story States**:
+- [x] **Story States**:
   - **Default**: 2 versions, no branching.  
   - **WithBranching**: e.g. v1 → v2, plus v2b as a parallel branch.
 

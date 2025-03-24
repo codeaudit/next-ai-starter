@@ -75,4 +75,56 @@ export const PreviewMode: Story = {
       },
     },
   },
+};
+
+const simpleVersions = [
+  { id: 'v1', label: 'Draft 1', date: '2025-01-01' },
+  { id: 'v2', label: 'Draft 2', date: '2025-02-10' }
+];
+
+export const VersionTimeline: Story = {
+  args: {
+    documentContent: sampleMarkdown,
+    editMode: false,
+    versions: simpleVersions,
+    selectedVersion: 'v2',
+    onToggleEditMode: action('editModeToggled'),
+    onContentChange: action('contentChanged'),
+    onSelectVersion: action('versionSelected'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Document editor with a simple version timeline below',
+      },
+    },
+  },
+};
+
+const versionWithBranching = [
+  { id: 'v1', label: 'Draft 1', date: '2025-01-01' },
+  { id: 'v2', label: 'Draft 2', date: '2025-02-10' },
+  { id: 'v2b', label: 'Alternative', date: '2025-02-15', parentId: 'v1' },
+  { id: 'v3', label: 'Final', date: '2025-03-01', parentId: 'v2' },
+  { id: 'v2c', label: 'Experiment', date: '2025-02-20', parentId: 'v1' },
+  { id: 'v3b', label: 'Alt Final', date: '2025-03-05', parentId: 'v2b' }
+];
+
+export const VersionTimelineWithBranching: Story = {
+  args: {
+    documentContent: sampleMarkdown,
+    editMode: false,
+    versions: versionWithBranching,
+    selectedVersion: 'v3',
+    onToggleEditMode: action('editModeToggled'),
+    onContentChange: action('contentChanged'),
+    onSelectVersion: action('versionSelected'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Document editor with a complex version timeline showing branching',
+      },
+    },
+  },
 }; 
