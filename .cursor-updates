@@ -6,3 +6,8 @@
 - Fixed dynamic route warning by adding force-dynamic config to root page
 - Added Storybook with Button component and stories, updated .cursorrules with Storybook guidelines
 - Captured screenshot of Button component stories in Storybook
+- Set up database with PostgreSQL schema using Prisma migrations, then generated Prisma client.
+- Fixed email authentication configuration to use the correct Resend API key for NextAuth email provider.
+- Implemented TopBar component with BasicLayout, VibeControl, and AdvancedMenu stories for the PatternLanguageO1 Toolbox UI.
+- Added LeftPanel component with workspace dropdown, document hierarchy, pattern web toggle, and collapsible snippets library.
+- Created PatternWeb component with BasicGraph and InteractiveEdges stories featuring curved paths, direction arrows, and hover interactions for pattern nodes and connections.

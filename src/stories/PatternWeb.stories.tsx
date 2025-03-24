@@ -37,4 +37,23 @@ export const BasicGraph: Story = {
       },
     },
   },
+};
+
+export const InteractiveEdges: Story = {
+  args: {
+    patterns: [
+      { id: "ScenarioExpansion", label: "Scenario Expansion", connectedTo: ["ConstraintEmphasis", "ContradictionMapping"] },
+      { id: "ConstraintEmphasis", label: "Constraint Emphasis", connectedTo: ["ConflictMediation"] },
+      { id: "ConflictMediation", label: "Conflict Mediation", connectedTo: [] },
+      { id: "ContradictionMapping", label: "Contradiction Mapping", connectedTo: ["ConflictMediation"] }
+    ],
+    onNodeClick: action('nodeClicked'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A graph with more connections between patterns and interactive edges that highlight on hover',
+      },
+    },
+  },
 }; 
