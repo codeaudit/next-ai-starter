@@ -144,12 +144,12 @@ Below is a **long, detailed markdown list** of **1 story-point tasks** for an AI
 
 ### 4.3. **CenterPanel/ConflictView**
 
-- [ ] **Task**: Show a 2-column **Conflicting Approaches** layout.  
-- [ ] **Props/Data**:
+- [x] **Task**: Show a 2-column **Conflicting Approaches** layout.  
+- [x] **Props/Data**:
   - `approachA: { title: "Approach A", content: "..." }`
   - `approachB: { title: "Approach B", content: "..." }`
   - `onResolveConflict: (resolution) => console.log("Conflict resolved with:", resolution)`
-- [ ] **Story States**:
+- [x] **Story States**:
   - **NoConflict**: Renders empty or placeholder text "No conflict selected."  
   - **ConflictDetected**: Approach A vs. Approach B with a middle bridging box.
 

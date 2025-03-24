@@ -127,4 +127,65 @@ export const VersionTimelineWithBranching: Story = {
       },
     },
   },
+};
+
+const sampleApproachA = {
+  title: "Functional Approach",
+  content: `## Functional Programming Approach
+
+This approach prioritizes:
+
+- **Immutability** - Data never changes once created
+- **Pure Functions** - No side effects
+- **Function Composition** - Building complex behavior from simple functions
+
+### Benefits
+- Easier to test and debug
+- More predictable behavior
+- Thread-safe by default`
+};
+
+const sampleApproachB = {
+  title: "Object-Oriented Approach",
+  content: `## Object-Oriented Programming Approach
+
+This approach prioritizes:
+
+- **Encapsulation** - Bundling data with methods
+- **Inheritance** - Code reuse through class hierarchies
+- **Polymorphism** - Objects can take different forms
+
+### Benefits
+- Models real-world entities naturally
+- Intuitive for many developers
+- Established design patterns`
+};
+
+export const ConflictView: Story = {
+  args: {
+    showConflictView: true,
+    approachA: sampleApproachA,
+    approachB: sampleApproachB,
+    onResolveConflict: action('conflictResolved'),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A view showing two conflicting approaches with a resolution area',
+      },
+    },
+  },
+};
+
+export const EmptyConflictView: Story = {
+  args: {
+    showConflictView: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'The empty state of the conflict view when no conflict is selected',
+      },
+    },
+  },
 }; 

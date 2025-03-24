@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Edit, Eye, Save, Clock, GitBranch, Check } from "lucide-react";
+import { Edit, Eye, Save, Clock, GitBranch, Check, AlertTriangle } from "lucide-react";
 
 export interface DocumentEditorProps {
   documentContent: string;
@@ -263,42 +263,164 @@ const VersionNode: React.FC<VersionNodeProps> = ({
   );
 };
 
+export interface Approach {
+  title: string;
+  content: string;
+}
+
+export interface ConflictViewProps {
+  approachA?: Approach;
+  approachB?: Approach;
+  onResolveConflict?: (resolution: string) => void;
+}
+
+export const ConflictView: React.FC<ConflictViewProps> = ({
+  approachA,
+  approachB,
+  onResolveConflict,
+}) => {
+  const [resolution, setResolution] = useState('');
+  
+  // If no approaches provided, show empty state
+  if (!approachA && !approachB) {
+    return (
+      <div className="w-full p-8 flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400">
+        <AlertTriangle className="h-10 w-10 mb-4 opacity-30" />
+        <p className="text-sm">No conflict selected.</p>
+        <p className="text-xs mt-1">Select a conflict from the conflict panel to see details.</p>
+      </div>
+    );
+  }
+  
+  const handleResolve = () => {
+    if (resolution.trim()) {
+      onResolveConflict?.(resolution);
+    }
+  };
+  
+  return (
+    <div className="w-full h-full flex flex-col bg-white dark:bg-neutral-900 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800">
+      <div className="flex justify-between items-center px-4 py-2 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
+        <div className="flex items-center">
+          <AlertTriangle className="h-4 w-4 text-amber-500 mr-2" />
+          <h2 className="text-lg font-medium text-neutral-800 dark:text-white">Conflicting Approaches</h2>
+        </div>
+      </div>
+      
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* Approach A */}
+        <div className="flex-1 min-w-0 flex flex-col overflow-hidden border-r border-neutral-200 dark:border-neutral-700">
+          <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-100 dark:border-blue-900/30">
+            <h3 className="font-medium text-blue-800 dark:text-blue-300">
+              {approachA?.title || "Approach A"}
+            </h3>
+          </div>
+          <div className="flex-1 p-4 overflow-auto">
+            <div className="prose dark:prose-invert prose-sm max-w-none">
+              <ReactMarkdown>{approachA?.content || ""}</ReactMarkdown>
+            </div>
+          </div>
+        </div>
+        
+        {/* Approach B */}
+        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
+          <div className="px-4 py-2 bg-purple-50 dark:bg-purple-900/20 border-b border-purple-100 dark:border-purple-900/30">
+            <h3 className="font-medium text-purple-800 dark:text-purple-300">
+              {approachB?.title || "Approach B"}
+            </h3>
+          </div>
+          <div className="flex-1 p-4 overflow-auto">
+            <div className="prose dark:prose-invert prose-sm max-w-none">
+              <ReactMarkdown>{approachB?.content || ""}</ReactMarkdown>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Resolution area */}
+      <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
+        <div className="mb-2">
+          <h3 className="text-sm font-medium text-neutral-800 dark:text-white">Resolution</h3>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            Describe how to bridge these conflicting approaches
+          </p>
+        </div>
+        <div className="flex flex-col space-y-3">
+          <textarea 
+            value={resolution}
+            onChange={(e) => setResolution(e.target.value)}
+            placeholder="Enter your resolution here..."
+            className="w-full p-2 text-sm border border-neutral-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 min-h-[80px] focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
+          />
+          <button
+            onClick={handleResolve}
+            disabled={!resolution.trim()}
+            className="self-end px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Save Resolution
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export interface CenterPanelProps {
-  documentContent: string;
-  editMode: boolean;
+  documentContent?: string;
+  editMode?: boolean;
   versions?: Version[];
   selectedVersion?: string;
+  approachA?: Approach;
+  approachB?: Approach;
+  showConflictView?: boolean;
   onToggleEditMode?: () => void;
   onContentChange?: (content: string) => void;
   onSelectVersion?: (versionId: string) => void;
+  onResolveConflict?: (resolution: string) => void;
 }
 
 export const CenterPanel: React.FC<CenterPanelProps> = ({
-  documentContent,
-  editMode,
+  documentContent = "",
+  editMode = false,
   versions = [],
   selectedVersion,
+  approachA,
+  approachB,
+  showConflictView = false,
   onToggleEditMode,
   onContentChange,
   onSelectVersion,
+  onResolveConflict,
 }) => {
   return (
     <div className="flex-1 h-full overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-hidden">
-        <DocumentEditor
-          documentContent={documentContent}
-          editMode={editMode}
-          onToggleEditMode={onToggleEditMode}
-          onContentChange={onContentChange}
-        />
-      </div>
-      
-      {versions.length > 0 && (
-        <VersionTimeline
-          versions={versions}
-          selectedVersion={selectedVersion}
-          onSelectVersion={onSelectVersion}
-        />
+      {showConflictView ? (
+        <div className="flex-1 overflow-hidden">
+          <ConflictView 
+            approachA={approachA}
+            approachB={approachB}
+            onResolveConflict={onResolveConflict}
+          />
+        </div>
+      ) : (
+        <>
+          <div className="flex-1 overflow-hidden">
+            <DocumentEditor
+              documentContent={documentContent}
+              editMode={editMode}
+              onToggleEditMode={onToggleEditMode}
+              onContentChange={onContentChange}
+            />
+          </div>
+          
+          {versions.length > 0 && (
+            <VersionTimeline
+              versions={versions}
+              selectedVersion={selectedVersion}
+              onSelectVersion={onSelectVersion}
+            />
+          )}
+        </>
       )}
     </div>
   );
