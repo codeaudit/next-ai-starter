@@ -119,13 +119,13 @@ Below is a **long, detailed markdown list** of **1 story-point tasks** for an AI
 
 ### 4.1. **CenterPanel/DocumentEditor**
 
-- [ ] **Task**: Implement a **markdown or text editor** (or stub) with an Edit/Preview toggle.  
-- [ ] **Props/Data**:
+- [x] **Task**: Implement a **markdown or text editor** (or stub) with an Edit/Preview toggle.  
+- [x] **Props/Data**:
   - `documentContent: "# Title\nSome text..."`
   - `editMode: boolean` (true/false)
   - `onToggleEditMode: () => {}`
   - `onContentChange: (newContent) => console.log("Doc updated:", newContent)`
-- [ ] **Story States**:
+- [x] **Story States**:
   - **EditMode**: A simple textbox or code editor with the markdown content.  
   - **PreviewMode**: Renders the markdown as HTML.
 
