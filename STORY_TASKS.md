@@ -172,15 +172,15 @@ Below is a **long, detailed markdown list** of **1 story-point tasks** for an AI
 
 ### 5.2. **AIComposer/TabbedConversations**
 
-- [ ] **Task**: Extend chat interface to handle **multiple tabs** for parallel threads.  
-- [ ] **Props/Data**:
+- [x] **Task**: Extend chat interface to handle **multiple tabs** for parallel threads.  
+- [x] **Props/Data**:
   - `tabs: [
       { id: "BrainstormThread", label: "Brainstorm" },
       { id: "ValidationThread", label: "Validation" }
     ]`
   - `activeTabId: "BrainstormThread"`
   - `onSwitchTab: (id) => console.log("Switched to tab:", id)`
-- [ ] **Story States**:
+- [x] **Story States**:
   - **TwoTabs**: Renders 2 tabs, each with short message logs.  
   - **AddTab**: Demonstrate adding a new tab on user click.
 

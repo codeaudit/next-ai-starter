@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, User, Bot } from "lucide-react";
+import { Send, User, Bot, Plus, X } from "lucide-react";
 
 export interface Message {
   role: "user" | "ai";
@@ -123,22 +123,130 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   );
 };
 
+export interface ConversationTab {
+  id: string;
+  label: string;
+  messages: Message[];
+}
+
+export interface TabbedConversationsProps {
+  tabs: ConversationTab[];
+  activeTabId: string;
+  onSwitchTab: (tabId: string) => void;
+  onSendMessage: (text: string, tabId: string) => void;
+  onAddTab?: () => void;
+  onCloseTab?: (tabId: string) => void;
+}
+
+export const TabbedConversations: React.FC<TabbedConversationsProps> = ({
+  tabs,
+  activeTabId,
+  onSwitchTab,
+  onSendMessage,
+  onAddTab,
+  onCloseTab,
+}) => {
+  const activeTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
+  
+  const handleSendMessage = (text: string) => {
+    onSendMessage(text, activeTabId);
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Tabs Header */}
+      <div className="flex items-center border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800 overflow-x-auto">
+        {tabs.map(tab => (
+          <div 
+            key={tab.id}
+            className={`
+              flex items-center gap-1 px-3 py-2 border-r border-neutral-200 dark:border-neutral-800 cursor-pointer whitespace-nowrap
+              ${activeTabId === tab.id 
+                ? 'text-blue-600 dark:text-blue-400 bg-white dark:bg-neutral-900 border-b-2 border-blue-500 dark:border-blue-400' 
+                : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+              }
+            `}
+            onClick={() => onSwitchTab(tab.id)}
+          >
+            <span className="text-sm font-medium">{tab.label}</span>
+            {tabs.length > 1 && onCloseTab && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCloseTab(tab.id);
+                }}
+                className="ml-1 p-0.5 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                aria-label={`Close ${tab.label} tab`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+        ))}
+        
+        {onAddTab && (
+          <button
+            onClick={onAddTab}
+            className="flex items-center gap-1 px-3 py-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+            aria-label="Add new conversation tab"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      
+      {/* Active Tab Content */}
+      <div className="flex-1 overflow-hidden">
+        <ChatInterface 
+          messages={activeTab.messages}
+          onSendMessage={handleSendMessage}
+        />
+      </div>
+    </div>
+  );
+};
+
 export interface RightPanelProps {
   messages?: Message[];
+  tabs?: ConversationTab[];
+  activeTabId?: string;
+  useTabs?: boolean;
   onSendMessage?: (text: string) => void;
+  onTabSendMessage?: (text: string, tabId: string) => void;
+  onSwitchTab?: (tabId: string) => void;
+  onAddTab?: () => void;
+  onCloseTab?: (tabId: string) => void;
 }
 
 export const RightPanel: React.FC<RightPanelProps> = ({
   messages = [],
+  tabs = [],
+  activeTabId = "",
+  useTabs = false,
   onSendMessage,
+  onTabSendMessage,
+  onSwitchTab,
+  onAddTab,
+  onCloseTab,
 }) => {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-hidden">
-        <ChatInterface 
-          messages={messages} 
-          onSendMessage={onSendMessage} 
-        />
+        {useTabs && tabs.length > 0 ? (
+          <TabbedConversations 
+            tabs={tabs}
+            activeTabId={activeTabId || tabs[0].id}
+            onSwitchTab={onSwitchTab || (() => {})}
+            onSendMessage={onTabSendMessage || (() => {})}
+            onAddTab={onAddTab}
+            onCloseTab={onCloseTab}
+          />
+        ) : (
+          <ChatInterface 
+            messages={messages} 
+            onSendMessage={onSendMessage} 
+          />
+        )}
       </div>
     </div>
   );
